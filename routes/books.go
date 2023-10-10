@@ -5,20 +5,20 @@ import (
 	"net/http"
 )
 
-const GET_BOOKS = "/books"
-const GET_BOOK_WITH_ID = "/books/:id"
-const PUT_BOOK = "/books/:id"
-const DELETE_BOOK = "/books/:id"
-
-func SetUpBooksEndpoint(e *echo.Echo) {
-	e.GET(GET_BOOKS, getBook)
-	e.GET(GET_BOOK_WITH_ID, getBookWithId)
-	e.PUT(PUT_BOOK, putBook)
-	e.DELETE(DELETE_BOOK, deleteBook)
+func SetUpBooksEndpoint(echoClient *echo.Echo) {
+	echoClient.GET(GET_BOOKS, getBooks)
+	echoClient.POST(POST_BOOKS, postBooks)
+	echoClient.GET(GET_BOOK_WITH_ID, getBookWithId)
+	echoClient.PUT(PUT_BOOK, putBook)
+	echoClient.DELETE(DELETE_BOOK, deleteBook)
 }
 
-func getBook(c echo.Context) error {
+func getBooks(c echo.Context) error {
 	return c.String(http.StatusOK, "GET ALL BOOKS")
+}
+
+func postBooks(c echo.Context) error {
+	return c.String(http.StatusOK, "POST BOOKS")
 }
 
 func getBookWithId(c echo.Context) error {

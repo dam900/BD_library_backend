@@ -5,16 +5,11 @@ import (
 	"net/http"
 )
 
-const GET_BORROWED_BOOKS = "/books/borrowed"
-const POST_BORROWED_BOOKS = "/books/borrowed"
-const PUT_BORROWED_BOOK = "/books/borrowed/:id"
-const DELETE_BORROWED_BOOK = "/books/borrowed/:id"
-
-func SetUpBorrowedBooksEndpoint(e *echo.Echo) {
-	e.GET(GET_BORROWED_BOOKS, getBorrowedBooks)
-	e.POST(POST_BORROWED_BOOKS, postBorrowedBook)
-	e.PUT(PUT_BORROWED_BOOK, putBorrowedBook)
-	e.DELETE(DELETE_BORROWED_BOOK, deleteBorrowedBook)
+func SetUpBorrowedBooksEndpoint(echoClient *echo.Echo) {
+	echoClient.GET(GET_BORROWED_BOOKS, getBorrowedBooks)
+	echoClient.POST(POST_BORROWED_BOOKS, postBorrowedBook)
+	echoClient.PUT(PUT_BORROWED_BOOK, putBorrowedBook)
+	echoClient.DELETE(DELETE_BORROWED_BOOK, deleteBorrowedBook)
 }
 
 func getBorrowedBooks(c echo.Context) error {
