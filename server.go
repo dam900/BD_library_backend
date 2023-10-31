@@ -10,8 +10,8 @@ func main() {
 	e := echo.New()
 	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
 		Format: "time=${time_custom} method=${method}, uri=${uri}, status=${status}\n" +
-			"query=${query}\n" +
-			"header=${header}\n",
+			"header=${header}\n" +
+			"query=${query}\n",
 		CustomTimeFormat: "2006-01-02 15:04:05.00",
 	}))
 
