@@ -1,6 +1,8 @@
 package types
 
 import (
+	"github.com/labstack/echo/v4"
+	"library_app/storage"
 	"time"
 )
 
@@ -12,8 +14,12 @@ type Book struct {
 	BookedStatus   *BookedStatus   `json:"bookedStatus"`
 }
 
-func (b Book) isBorrowed() bool {
-	if b.BorrowedStatus != nil {
+type BookedStatus struct {
+	To time.Time `json:"to"`
+}
+
+func (b Book) isBooked() bool {
+	if b.BookedStatus != nil {
 		return true
 	}
 	return false
@@ -24,8 +30,11 @@ type BorrowedStatus struct {
 	To   time.Time `json:"to"`
 }
 
-type BookedStatus struct {
-	To time.Time `json:"to"`
+func (b Book) isBorrowed() bool {
+	if b.BorrowedStatus != nil {
+		return true
+	}
+	return false
 }
 
 type User struct {
@@ -35,3 +44,5 @@ type User struct {
 	Login    string `json:"login"`
 	Password string `json:"password"`
 }
+
+type ApiHandlerFunc func(c echo.Context, store *storage.PostgresStorage) error
