@@ -1,8 +1,6 @@
 package types
 
 import (
-	"github.com/labstack/echo/v4"
-	"library_app/storage"
 	"time"
 )
 
@@ -44,5 +42,3 @@ type User struct {
 	Login    string `json:"login"`
 	Password string `json:"password"`
 }
-
-type ApiHandlerFunc func(c echo.Context, store *storage.PostgresStorage) error

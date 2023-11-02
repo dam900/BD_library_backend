@@ -1,5 +1,9 @@
 package routes
 
+// Index/info page
+
+const INDEX = "/"
+
 // Books endpoint
 
 const GET_BOOKS = "/books"

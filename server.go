@@ -9,14 +9,9 @@ import (
 )
 
 func main() {
-
-	store, err := storage.NewPostgresStore()
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
+	log.Println("Creating echo client")
 	e := echo.New()
+	e.File(routes.INDEX, "static/index.html")
 	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
 		Format: "time=${time_custom} method=${method}, uri=${uri}, status=${status}\n" +
 			"header=${header}\n" +
@@ -24,10 +19,20 @@ func main() {
 		CustomTimeFormat: "2006-01-02 15:04:05.00",
 	}))
 
+	store, err := storage.NewPostgresStore()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.Println("Setting up routes")
+
 	routes.SetUpBooksEndpoint(e, store)
 	routes.SetUpBorrowedBooksEndpoint(e, store)
 	routes.SetUpBookedBooksEndpoint(e, store)
 	routes.SetUpArchivedBooksEndpoint(e, store)
 
+	log.Println("Starting a server")
+	log.Println("Server running on: http://localhost:1323/")
 	e.Logger.Fatal(e.Start(":1323"))
+
 }
