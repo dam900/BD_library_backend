@@ -7,6 +7,10 @@ import (
 	"log"
 )
 
+const (
+	DbContextKey = "__db"
+)
+
 type (
 	Repository[T any] interface {
 		Create(item T) error
@@ -19,7 +23,6 @@ type (
 		BooksRepository *BooksRepository
 		UsersRepository *UsersRepository
 	}
-	ApiHandlerFunc func(c echo.Context, store *PostgresStorage) error
 )
 
 func NewPostgresStore() (*PostgresStorage, error) {
@@ -44,8 +47,11 @@ func NewPostgresStore() (*PostgresStorage, error) {
 
 }
 
-func WithDb(db *PostgresStorage, f ApiHandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		return f(c, db)
+func DbMiddleware(db *PostgresStorage) echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			c.Set(DbContextKey, db)
+			return next(c)
+		}
 	}
 }

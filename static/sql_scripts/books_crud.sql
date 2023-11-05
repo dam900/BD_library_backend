@@ -1,9 +1,5 @@
 -- CREATE
-WITH new_book as (
-    INSERT INTO books (title, genre) VALUES ('Władca Pierścieni', 'Fantasy')
-        RETURNING id)
-SELECT id
-FROM new_book;
+INSERT INTO books (title, genre) VALUES ('Władca Pierścieni', 'Fantasy');
 
 -- READ ALL
 

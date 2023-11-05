@@ -23,12 +23,13 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	e.Use(storage.DbMiddleware(store))
 
 	log.Println("Setting up routes")
 
-	routes.SetUpBooksEndpoint(e, store)
-	routes.SetUpBorrowedBooksEndpoint(e, store)
-	routes.SetUpBookedBooksEndpoint(e, store)
+	routes.SetUpBooksEndpoint(e)
+	routes.SetUpBorrowedBooksEndpoint(e)
+	routes.SetUpBookedBooksEndpoint(e)
 
 	log.Println("Starting a server")
 	log.Println("Server running on: http://localhost:1323/")

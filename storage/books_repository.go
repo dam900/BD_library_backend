@@ -9,8 +9,7 @@ type BooksRepository struct {
 	db *sql.DB
 }
 
-func (b BooksRepository) Create(item types.Book) error {
-	//TODO implement me
+func (b BooksRepository) Create(book types.Book) error {
 	panic("implement me")
 }
 
