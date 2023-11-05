@@ -19,13 +19,6 @@ const POST_BORROWED_BOOKS = "/borrowed"
 const PUT_BORROWED_BOOK = "/borrowed/:id"
 const DELETE_BORROWED_BOOK = "/borrowed/:id"
 
-// Archived Books endpoint
-
-const GET_ARCHIVED_BOOKS = "/archived"
-const POST_ARCHIVED_BOOKS = "/archived"
-const PUT_ARCHIVED_BOOK = "/archived/:id"
-const DELETE_ARCHIVED_BOOK = "/archived/:id"
-
 // Booked Books endpoint
 
 const GET_BOOKED_BOOKS = "/booked"

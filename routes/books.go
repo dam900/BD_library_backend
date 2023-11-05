@@ -9,11 +9,11 @@ import (
 )
 
 func SetUpBooksEndpoint(echoClient *echo.Echo, store *storage.PostgresStorage) {
-	echoClient.GET(GET_BOOKS, storage.WithStorage(store, getBooks))
-	echoClient.POST(POST_BOOKS, storage.WithStorage(store, postBooks))
-	echoClient.GET(GET_BOOK_WITH_ID, storage.WithStorage(store, getBookWithId))
-	echoClient.PUT(PUT_BOOK, storage.WithStorage(store, putBook))
-	echoClient.DELETE(DELETE_BOOK, storage.WithStorage(store, deleteBook))
+	echoClient.GET(GET_BOOKS, storage.WithDb(store, getBooks))
+	echoClient.POST(POST_BOOKS, storage.WithDb(store, postBooks))
+	echoClient.GET(GET_BOOK_WITH_ID, storage.WithDb(store, getBookWithId))
+	echoClient.PUT(PUT_BOOK, storage.WithDb(store, putBook))
+	echoClient.DELETE(DELETE_BOOK, storage.WithDb(store, deleteBook))
 }
 
 func getBooks(c echo.Context, store *storage.PostgresStorage) error {

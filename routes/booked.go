@@ -7,10 +7,10 @@ import (
 )
 
 func SetUpBookedBooksEndpoint(echoClient *echo.Echo, store *storage.PostgresStorage) {
-	echoClient.GET(GET_BOOKED_BOOKS, storage.WithStorage(store, getBookedBooks))
-	echoClient.POST(POST_BOOKED_BOOKS, storage.WithStorage(store, postBookedBook))
-	echoClient.PUT(PUT_BOOKED_BOOK, storage.WithStorage(store, putBookedBook))
-	echoClient.DELETE(DELETE_BOOKED_BOOK, storage.WithStorage(store, deleteBookedBook))
+	echoClient.GET(GET_BOOKED_BOOKS, storage.WithDb(store, getBookedBooks))
+	echoClient.POST(POST_BOOKED_BOOKS, storage.WithDb(store, postBookedBook))
+	echoClient.PUT(PUT_BOOKED_BOOK, storage.WithDb(store, putBookedBook))
+	echoClient.DELETE(DELETE_BOOKED_BOOK, storage.WithDb(store, deleteBookedBook))
 }
 
 func getBookedBooks(c echo.Context, store *storage.PostgresStorage) error {

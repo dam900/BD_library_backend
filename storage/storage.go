@@ -7,20 +7,20 @@ import (
 	"log"
 )
 
-type ApiHandlerFunc func(c echo.Context, store *PostgresStorage) error
-
-type Repository[T any] interface {
-	Create(item T) error
-	Retrieve(id int) error
-	RetrieveAll() error
-	Delete(id int) error
-	Update(id int, newItem T) error
-}
-
-type PostgresStorage struct {
-	BooksRepository *BooksRepository
-	UsersRepository *UsersRepository
-}
+type (
+	Repository[T any] interface {
+		Create(item T) error
+		Retrieve(id int) error
+		RetrieveAll() error
+		Delete(id int) error
+		Update(id int, newItem T) error
+	}
+	PostgresStorage struct {
+		BooksRepository *BooksRepository
+		UsersRepository *UsersRepository
+	}
+	ApiHandlerFunc func(c echo.Context, store *PostgresStorage) error
+)
 
 func NewPostgresStore() (*PostgresStorage, error) {
 	connStr := "user=postgres dbname=postgres password=hello_world sslmode=disable"
@@ -44,8 +44,8 @@ func NewPostgresStore() (*PostgresStorage, error) {
 
 }
 
-func WithStorage(store *PostgresStorage, f ApiHandlerFunc) echo.HandlerFunc {
+func WithDb(db *PostgresStorage, f ApiHandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		return f(c, store)
+		return f(c, db)
 	}
 }

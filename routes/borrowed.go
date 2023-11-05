@@ -7,10 +7,10 @@ import (
 )
 
 func SetUpBorrowedBooksEndpoint(echoClient *echo.Echo, store *storage.PostgresStorage) {
-	echoClient.GET(GET_BORROWED_BOOKS, storage.WithStorage(store, getBorrowedBooks))
-	echoClient.POST(POST_BORROWED_BOOKS, storage.WithStorage(store, postBorrowedBook))
-	echoClient.PUT(PUT_BORROWED_BOOK, storage.WithStorage(store, putBorrowedBook))
-	echoClient.DELETE(DELETE_BORROWED_BOOK, storage.WithStorage(store, deleteBorrowedBook))
+	echoClient.GET(GET_BORROWED_BOOKS, storage.WithDb(store, getBorrowedBooks))
+	echoClient.POST(POST_BORROWED_BOOKS, storage.WithDb(store, postBorrowedBook))
+	echoClient.PUT(PUT_BORROWED_BOOK, storage.WithDb(store, putBorrowedBook))
+	echoClient.DELETE(DELETE_BORROWED_BOOK, storage.WithDb(store, deleteBorrowedBook))
 }
 
 func getBorrowedBooks(c echo.Context, store *storage.PostgresStorage) error {

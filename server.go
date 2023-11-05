@@ -29,7 +29,6 @@ func main() {
 	routes.SetUpBooksEndpoint(e, store)
 	routes.SetUpBorrowedBooksEndpoint(e, store)
 	routes.SetUpBookedBooksEndpoint(e, store)
-	routes.SetUpArchivedBooksEndpoint(e, store)
 
 	log.Println("Starting a server")
 	log.Println("Server running on: http://localhost:1323/")
