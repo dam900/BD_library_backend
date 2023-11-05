@@ -1,5 +1,5 @@
 -- CREATE
-INSERT INTO books (title, genre) VALUES ('Władca Pierścieni', 'Fantasy');
+INSERT INTO books (id, title, genre) VALUES ('uuid', 'Władca Pierścieni', 'Fantasy');
 
 -- READ ALL
 

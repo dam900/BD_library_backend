@@ -6,11 +6,17 @@ import (
 
 type (
 	Book struct {
-		Id             int             `json:"id"`
+		Id             string          `json:"id"`
 		Name           string          `json:"name"`
-		Author         string          `json:"author"`
+		Genre          string          `json:"genre"`
+		Author         Author          `json:"author"`
 		BorrowedStatus *BorrowedStatus `json:"borrowedStatus"`
 		BookedStatus   *BookedStatus   `json:"bookedStatus"`
+	}
+	Author struct {
+		Id       string `json:"id"`
+		Name     string `json:"name"`
+		LastName string `json:"lastName"`
 	}
 	BookedStatus struct {
 		To time.Time `json:"to"`

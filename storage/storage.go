@@ -12,16 +12,20 @@ const (
 )
 
 type (
+	QueryOptions struct {
+		ctx echo.Context
+	}
 	Repository[T any] interface {
-		Create(item T) error
-		Retrieve(id int) error
-		RetrieveAll() error
-		Delete(id int) error
-		Update(id int, newItem T) error
+		Create(item T, opt QueryOptions) error
+		Retrieve(id int, opt QueryOptions) error
+		RetrieveAll(opt QueryOptions) error
+		Delete(id int, opt QueryOptions) error
+		Update(id int, newItem T, opt QueryOptions) error
 	}
 	PostgresStorage struct {
-		BooksRepository *BooksRepository
-		UsersRepository *UsersRepository
+		db              *sql.DB
+		BooksRepository BooksRepository
+		UsersRepository UsersRepository
 	}
 )
 
@@ -41,8 +45,7 @@ func NewPostgresStore() (*PostgresStorage, error) {
 	log.Println("Ping succeeded")
 
 	return &PostgresStorage{
-		BooksRepository: &BooksRepository{db: db},
-		UsersRepository: &UsersRepository{db: db},
+		db: db,
 	}, nil
 
 }

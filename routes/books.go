@@ -2,9 +2,7 @@ package routes
 
 import (
 	"github.com/labstack/echo/v4"
-	"library_app/types"
 	"net/http"
-	"time"
 )
 
 func SetUpBooksEndpoint(echoClient *echo.Echo) {
@@ -16,22 +14,11 @@ func SetUpBooksEndpoint(echoClient *echo.Echo) {
 }
 
 func getBooks(c echo.Context) error {
-
-	b := types.Book{
-		Id:     0,
-		Name:   "Diune",
-		Author: "Frank Herbert",
-		BorrowedStatus: &types.BorrowedStatus{
-			From: time.Now(),
-			To:   time.Now(),
-		},
-		BookedStatus: &types.BookedStatus{To: time.Now()},
-	}
-
-	return c.JSONPretty(http.StatusOK, b, "	")
+	return c.String(http.StatusOK, "GetBook")
 }
 
 func postBooks(c echo.Context) error {
+	//storage := c.Get(storage.DbContextKey).(*storage.PostgresStorage)
 	return c.String(http.StatusOK, "POST BOOKS")
 }
 
