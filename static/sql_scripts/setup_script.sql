@@ -8,7 +8,7 @@ DROP TABLE IF EXISTS users;
 
 CREATE TABLE authors
 (
-    id        TEXT,
+    id        UUID DEFAULT gen_random_uuid(),
     name      TEXT NOT NULL,
     last_name TEXT NOT NULL,
     PRIMARY KEY (id)
@@ -16,7 +16,7 @@ CREATE TABLE authors
 
 CREATE TABLE books
 (
-    id    TEXT,
+    id    UUID DEFAULT gen_random_uuid(),
     title TEXT NOT NULL,
     genre TEXT NOT NULL,
     PRIMARY KEY (id)
@@ -24,8 +24,8 @@ CREATE TABLE books
 
 CREATE TABLE books2authors
 (
-    book_id   TEXT,
-    author_id TEXT,
+    book_id   UUID,
+    author_id UUID,
     CONSTRAINT fk_book FOREIGN KEY (book_id) REFERENCES books (id) ON DELETE CASCADE,
     CONSTRAINT fk_author FOREIGN KEY (author_id) REFERENCES authors (id) ON DELETE CASCADE,
     PRIMARY KEY (book_id, author_id)
@@ -42,7 +42,7 @@ CREATE TABLE users
 
 CREATE TABLE borrowed
 (
-    book_id   TEXT,
+    book_id   UUID,
     user_id   TEXT,
     date_from DATE NOT NULL,
     date_to   DATE NOT NULL,
@@ -53,7 +53,7 @@ CREATE TABLE borrowed
 
 CREATE TABLE booked
 (
-    book_id TEXT,
+    book_id UUID,
     user_id TEXT,
     date_to DATE NOT NULL,
     CONSTRAINT fk_book FOREIGN KEY (book_id) REFERENCES books (id) ON DELETE CASCADE,
