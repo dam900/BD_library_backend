@@ -17,11 +17,11 @@ type (
 		Offset int
 	}
 	Repository[T any] interface {
-		Create(item T, opt QueryOptions) error
-		Retrieve(id int, opt QueryOptions) error
-		RetrieveAll(opt QueryOptions) error
-		Delete(id int, opt QueryOptions) error
-		Update(id int, newItem T, opt QueryOptions) error
+		Create(item T, opt *QueryOptions) (string, error)
+		Retrieve(id string, opt *QueryOptions) (*T, error)
+		RetrieveAll(opt *QueryOptions) ([]T, error)
+		Delete(id string, opt *QueryOptions) error
+		Update(id string, newItem T, opt *QueryOptions) error
 	}
 	PostgresStorage struct {
 		db              *sql.DB

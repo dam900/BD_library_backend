@@ -16,7 +16,7 @@ func SetUpBooksEndpoint(echoClient *echo.Echo) {
 
 func getBooks(c echo.Context) error {
 	db := c.Get(storage.DbContextKey).(*storage.PostgresStorage)
-	result, err := db.BooksRepository.RetrieveAll(storage.QueryOptions{c, 0})
+	result, err := db.BooksRepository.RetrieveAll(&storage.QueryOptions{c, 0})
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "There was an error")
 	}
@@ -29,7 +29,12 @@ func postBooks(c echo.Context) error {
 
 func getBookWithId(c echo.Context) error {
 	id := c.Param("id")
-	return c.String(http.StatusOK, id)
+	db := c.Get(storage.DbContextKey).(*storage.PostgresStorage)
+	result, err := db.BooksRepository.Retrieve(id, &storage.QueryOptions{c, 0})
+	if err != nil {
+		return c.String(http.StatusInternalServerError, "There was an error")
+	}
+	return c.JSONPretty(http.StatusOK, result, "	")
 }
 
 func putBook(c echo.Context) error {
