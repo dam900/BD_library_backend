@@ -12,19 +12,19 @@ SELECT b.id,
        b.title,
        b.genre,
        JSON_BUILD_OBJECT(
-               'booked_by', b2.user_id,
-               'booked_to', b2.date_to
+               'bookedBy', b2.user_id,
+               'to', b2.date_to
            ) AS booked_status,
        JSON_BUILD_OBJECT(
-               'borrowed_by', b3.user_id,
-               'borrowed_from', b3.date_from,
-               'borrowed_to', b3.date_to
+               'borrowedBy', b3.user_id,
+               'from', b3.date_from,
+               'to', b3.date_to
            ) AS borrowed_status,
        JSON_AGG(
                JSON_BUILD_OBJECT(
-                       'author_id', a.id,
-                       'author_name', a.name,
-                       'author_lastname', a.last_name)
+                       'id', a.id,
+                       'name', a.name,
+                       'lastName', a.last_name)
            ) AS authors
 FROM books AS b
          JOIN books2authors AS ba ON b.id = ba.book_id
@@ -32,27 +32,26 @@ FROM books AS b
          LEFT JOIN booked b2 on b.id = b2.book_id
          LEFT JOIN borrowed b3 on b.id = b3.book_id
 GROUP BY b.id, b2.date_to, b2.user_id, b3.user_id, b3.date_from, b3.date_to
-OFFSET 0 LIMIT 2;
+OFFSET 0 LIMIT 100;
 
 -- READ CONCRETE
-
 SELECT b.id,
        b.title,
        b.genre,
        JSON_BUILD_OBJECT(
-               'booked_by', b2.user_id,
-               'booked_to', b2.date_to
+               'bookedBy', b2.user_id,
+               'to', b2.date_to
            ) AS booked_status,
        JSON_BUILD_OBJECT(
-               'borrowed_by', b3.user_id,
-               'borrowed_from', b3.date_from,
-               'borrowed_to', b3.date_to
+               'borrowedBy', b3.user_id,
+               'from', b3.date_from,
+               'to', b3.date_to
            ) AS borrowed_status,
        JSON_AGG(
                JSON_BUILD_OBJECT(
-                       'author_id', a.id,
-                       'author_name', a.name,
-                       'author_lastname', a.last_name)
+                       'id', a.id,
+                       'name', a.name,
+                       'lastName', a.last_name)
            ) AS authors
 FROM books AS b
          JOIN books2authors AS ba ON b.id = ba.book_id

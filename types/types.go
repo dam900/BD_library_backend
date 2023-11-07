@@ -5,11 +5,11 @@ import (
 )
 
 type (
-	Book struct {
+	BookDto struct {
 		Id             string          `json:"id"`
-		Name           string          `json:"name"`
+		Title          string          `json:"title"`
 		Genre          string          `json:"genre"`
-		Author         Author          `json:"author"`
+		Authors        []Author        `json:"authors"`
 		BorrowedStatus *BorrowedStatus `json:"borrowedStatus"`
 		BookedStatus   *BookedStatus   `json:"bookedStatus"`
 	}
@@ -19,32 +19,33 @@ type (
 		LastName string `json:"lastName"`
 	}
 	BookedStatus struct {
-		To time.Time `json:"to"`
+		BookedBy string     `json:"bookedBy"`
+		To       *time.Time `json:"to"`
 	}
 	BorrowedStatus struct {
-		From time.Time `json:"from"`
-		To   time.Time `json:"to"`
+		BorrowedBy string     `json:"borrowedBy"`
+		From       *time.Time `json:"from"`
+		To         *time.Time `json:"to"`
+	}
+	User struct {
+		Id       int    `json:"id"`
+		Name     string `json:"name"`
+		Surname  string `json:"author"`
+		Login    string `json:"login"`
+		Password string `json:"password"`
 	}
 )
 
-func (b Book) isBooked() bool {
+func (b BookDto) isBooked() bool {
 	if b.BookedStatus != nil {
 		return true
 	}
 	return false
 }
 
-func (b Book) isBorrowed() bool {
+func (b BookDto) isBorrowed() bool {
 	if b.BorrowedStatus != nil {
 		return true
 	}
 	return false
-}
-
-type User struct {
-	Id       int    `json:"id"`
-	Name     string `json:"name"`
-	Surname  string `json:"author"`
-	Login    string `json:"login"`
-	Password string `json:"password"`
 }

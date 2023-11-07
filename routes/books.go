@@ -2,6 +2,7 @@ package routes
 
 import (
 	"github.com/labstack/echo/v4"
+	"library_app/storage"
 	"net/http"
 )
 
@@ -14,11 +15,15 @@ func SetUpBooksEndpoint(echoClient *echo.Echo) {
 }
 
 func getBooks(c echo.Context) error {
-	return c.String(http.StatusOK, "GetBook")
+	db := c.Get(storage.DbContextKey).(*storage.PostgresStorage)
+	result, err := db.BooksRepository.RetrieveAll(storage.QueryOptions{c, 0})
+	if err != nil {
+		return c.String(http.StatusInternalServerError, "There was an error")
+	}
+	return c.JSONPretty(http.StatusOK, result, "	")
 }
 
 func postBooks(c echo.Context) error {
-	//storage := c.Get(storage.DbContextKey).(*storage.PostgresStorage)
 	return c.String(http.StatusOK, "POST BOOKS")
 }
 

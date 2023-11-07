@@ -13,7 +13,8 @@ const (
 
 type (
 	QueryOptions struct {
-		ctx echo.Context
+		Ctx    echo.Context
+		Offset int
 	}
 	Repository[T any] interface {
 		Create(item T, opt QueryOptions) error
@@ -45,7 +46,9 @@ func NewPostgresStore() (*PostgresStorage, error) {
 	log.Println("Ping succeeded")
 
 	return &PostgresStorage{
-		db: db,
+		db:              db,
+		BooksRepository: BooksRepository{db: db},
+		UsersRepository: UsersRepository{db: db},
 	}, nil
 
 }
