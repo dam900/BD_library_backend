@@ -9,23 +9,23 @@ type (
 		Id             string          `json:"id"`
 		Title          string          `json:"title"`
 		Genre          string          `json:"genre"`
-		Authors        []Author        `json:"authors"`
-		BorrowedStatus *BorrowedStatus `json:"borrowedStatus"`
-		BookedStatus   *BookedStatus   `json:"bookedStatus"`
+		Authors        []Author        `json:"authors,omitempty"`
+		BorrowedStatus *BorrowedStatus `json:"borrowedStatus,omitempty"`
+		BookedStatus   *BookedStatus   `json:"bookedStatus,omitempty"`
 	}
 	Author struct {
 		Id       string `json:"id"`
-		Name     string `json:"name"`
-		LastName string `json:"lastName"`
+		Name     string `json:"name,omitempty"`
+		LastName string `json:"lastName,omitempty"`
 	}
 	BookedStatus struct {
-		BookedBy string     `json:"bookedBy"`
-		To       *time.Time `json:"to"`
+		BookedBy *string    `json:"bookedBy,omitempty"`
+		To       *time.Time `json:"to,omitempty"`
 	}
 	BorrowedStatus struct {
-		BorrowedBy string     `json:"borrowedBy"`
-		From       *time.Time `json:"from"`
-		To         *time.Time `json:"to"`
+		BorrowedBy *string    `json:"borrowedBy,omitempty"`
+		From       *time.Time `json:"from,omitempty"`
+		To         *time.Time `json:"to,omitempty"`
 	}
 	User struct {
 		Id       int    `json:"id"`

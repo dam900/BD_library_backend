@@ -13,9 +13,7 @@ func main() {
 	e := echo.New()
 	e.File(routes.INDEX, "static/index.html")
 	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
-		Format: "time=${time_custom} method=${method}, uri=${uri}, status=${status}\n" +
-			"header=${header}\n" +
-			"query=${query}\n",
+		Format:           "time=${time_custom} method=${method}, uri=${uri}, status=${status}\n",
 		CustomTimeFormat: "2006-01-02 15:04:05.00",
 	}))
 

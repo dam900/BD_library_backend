@@ -3,6 +3,7 @@ package routes
 import (
 	"github.com/labstack/echo/v4"
 	"library_app/storage"
+	"library_app/types"
 	"net/http"
 )
 
@@ -23,10 +24,6 @@ func getBooks(c echo.Context) error {
 	return c.JSONPretty(http.StatusOK, result, "	")
 }
 
-func postBooks(c echo.Context) error {
-	return c.String(http.StatusOK, "POST BOOKS")
-}
-
 func getBookWithId(c echo.Context) error {
 	id := c.Param("id")
 	db := c.Get(storage.DbContextKey).(*storage.PostgresStorage)
@@ -35,6 +32,19 @@ func getBookWithId(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, "There was an error")
 	}
 	return c.JSONPretty(http.StatusOK, result, "	")
+}
+
+func postBooks(c echo.Context) error {
+	db := c.Get(storage.DbContextKey).(*storage.PostgresStorage)
+	b := &types.BookDto{}
+	if err := c.Bind(b); err != nil {
+		return err
+	}
+	b, err := db.BooksRepository.Create(b, &storage.QueryOptions{Ctx: c})
+	if err != nil {
+		return err
+	}
+	return c.JSONPretty(http.StatusOK, b, "	")
 }
 
 func putBook(c echo.Context) error {
