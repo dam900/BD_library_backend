@@ -15,14 +15,17 @@ func (b BooksRepository) Create(book *types.BookDto, opt *QueryOptions) (*types.
 	ctx := opt.Ctx.Request().Context()
 	tx, err := b.db.BeginTx(ctx, &sql.TxOptions{})
 	defer tx.Rollback()
+	cp := book
 	if err != nil {
 		return nil, err
 	}
-	row := tx.QueryRow(Query.CreateBookQuery, book.Title, book.Genre)
-	if err := row.Scan(&book.Id); err != nil {
+	row := tx.QueryRowContext(ctx, Query.CreateBookQuery, book.Title, book.Genre)
+
+	if err := row.Scan(&cp.Id); err != nil {
 		return nil, err
 	}
-	return book, nil
+
+	return cp, nil
 }
 
 func (b BooksRepository) Retrieve(id string, opt *QueryOptions) (*types.BookDto, error) {

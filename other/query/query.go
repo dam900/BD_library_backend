@@ -60,4 +60,7 @@ VALUES ($1, $2) RETURNING id
     )
 SELECT *
 FROM new_book;`
+
+	SetBorrowedQuery = `INSERT INTO borrowed (book_id, user_id, date_from, date_to)
+VALUES (2, 'Jowal', '2023-11-05','2023-11-05');`
 )

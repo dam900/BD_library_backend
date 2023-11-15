@@ -1,7 +1,7 @@
 package types
 
 import (
-	"time"
+	"github.com/rickb777/date"
 )
 
 type (
@@ -20,12 +20,12 @@ type (
 	}
 	BookedStatus struct {
 		BookedBy *string    `json:"bookedBy,omitempty"`
-		To       *time.Time `json:"to,omitempty"`
+		To       *date.Date `json:"to,omitempty"`
 	}
 	BorrowedStatus struct {
 		BorrowedBy *string    `json:"borrowedBy,omitempty"`
-		From       *time.Time `json:"from,omitempty"`
-		To         *time.Time `json:"to,omitempty"`
+		From       *date.Date `json:"from,omitempty"`
+		To         *date.Date `json:"to,omitempty"`
 	}
 	User struct {
 		Id       int    `json:"id"`
@@ -36,15 +36,15 @@ type (
 	}
 )
 
-func (b BookDto) isBooked() bool {
-	if b.BookedStatus != nil {
+func (b BookDto) IsBooked() bool {
+	if b.BookedStatus.BookedBy != nil {
 		return true
 	}
 	return false
 }
 
-func (b BookDto) isBorrowed() bool {
-	if b.BorrowedStatus != nil {
+func (b BookDto) IsBorrowed() bool {
+	if b.BorrowedStatus.BorrowedBy != nil {
 		return true
 	}
 	return false
