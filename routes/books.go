@@ -9,11 +9,11 @@ import (
 )
 
 func SetUpBooksEndpoint(echoClient *echo.Echo) {
-	echoClient.GET(GET_BOOKS, getBooks)
-	echoClient.POST(POST_BOOKS, postBooks)
-	echoClient.GET(GET_BOOK_WITH_ID, getBookWithId)
-	echoClient.PUT(PUT_BOOK, putBook)
-	echoClient.DELETE(DELETE_BOOK, deleteBook)
+	echoClient.GET(GetBooks, getBooks)
+	echoClient.POST(PostBook, postBooks)
+	echoClient.GET(GetBookWithId, getBookWithId)
+	echoClient.PUT(PutBook, putBook)
+	echoClient.DELETE(DeleteBook, deleteBook)
 }
 
 func getBooks(c echo.Context) error {
