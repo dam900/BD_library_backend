@@ -65,4 +65,6 @@ FROM new_book;`
 VALUES (2, 'Jowal', '2023-11-05','2023-11-05');`
 
 	ConnectAuthorsToBooksQuery = `INSERT INTO books2authors (book_id, author_id) VALUES ($1, $2);`
+
+	DeleteBookQuery = `DELETE FROM books WHERE books.id = $1;`
 )

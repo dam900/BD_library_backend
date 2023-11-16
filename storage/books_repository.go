@@ -138,8 +138,11 @@ func (booksRepository BooksRepository) RetrieveAll(opt *QueryOptions) ([]types.B
 }
 
 func (booksRepository BooksRepository) Delete(id string, opt *QueryOptions) error {
-	//TODO implement me
-	panic("implement me")
+	_, err := booksRepository.db.Exec(Query.DeleteBookQuery, id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (booksRepository BooksRepository) Update(id string, newItem types.BookDto, opt *QueryOptions) error {

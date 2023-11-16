@@ -60,10 +60,11 @@ FROM books AS b
          LEFT JOIN borrowed b3 on b.id = b3.book_id
 WHERE b.id = 'uuid'
 GROUP BY b.id, b2.date_to, b2.user_id, b3.user_id, b3.date_from, b3.date_to;
-
 -- UPDATE add later
 
 -- DELETE add later
+
+DELETE FROM books WHERE books.id = 'uuid';
 
 /* BOOKS 2 AUTHORS CRUD */
 -- CREATE
