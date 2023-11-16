@@ -24,8 +24,8 @@ CREATE TABLE books
 
 CREATE TABLE books2authors
 (
-    book_id   UUID,
-    author_id UUID,
+    book_id   UUID NOT NULL,
+    author_id UUID NOT NULL,
     CONSTRAINT fk_book FOREIGN KEY (book_id) REFERENCES books (id) ON DELETE CASCADE,
     CONSTRAINT fk_author FOREIGN KEY (author_id) REFERENCES authors (id) ON DELETE CASCADE,
     PRIMARY KEY (book_id, author_id)
@@ -42,8 +42,8 @@ CREATE TABLE users
 
 CREATE TABLE borrowed
 (
-    book_id   UUID,
-    user_id   TEXT,
+    book_id   UUID NOT NULL,
+    user_id   TEXT NOT NULL,
     date_from DATE NOT NULL,
     date_to   DATE NOT NULL,
     CONSTRAINT fk_book FOREIGN KEY (book_id) REFERENCES books (id) ON DELETE CASCADE,
@@ -53,8 +53,8 @@ CREATE TABLE borrowed
 
 CREATE TABLE booked
 (
-    book_id UUID,
-    user_id TEXT,
+    book_id UUID NOT NULL,
+    user_id TEXT NOT NULL,
     date_to DATE NOT NULL,
     CONSTRAINT fk_book FOREIGN KEY (book_id) REFERENCES books (id) ON DELETE CASCADE,
     CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users (login_id) ON DELETE CASCADE,
