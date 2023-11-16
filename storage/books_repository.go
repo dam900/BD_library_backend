@@ -5,33 +5,62 @@ import (
 	"encoding/json"
 	Query "library_app/other/query"
 	"library_app/types"
+	"log"
 )
 
 type BooksRepository struct {
 	db *sql.DB
 }
 
-func (b BooksRepository) Create(book *types.BookDto, opt *QueryOptions) (*types.BookDto, error) {
+func (booksRepository BooksRepository) Create(book *types.BookDto, opt *QueryOptions) (*types.BookDto, error) {
 	ctx := opt.Ctx.Request().Context()
-	tx, err := b.db.BeginTx(ctx, &sql.TxOptions{})
-	defer tx.Rollback()
 	cp := book
+	log.Println("Opening transaction")
+	tx, err := booksRepository.db.BeginTx(ctx, &sql.TxOptions{})
+
+	rollback := func() {
+		if err := tx.Rollback(); err != nil {
+			log.Printf("Unable to roll back: %v", err)
+		}
+	}
+
 	if err != nil {
+		log.Printf("Cannot open transaction: %v", err)
 		return nil, err
 	}
+	log.Println("Success")
 	row := tx.QueryRowContext(ctx, Query.CreateBookQuery, book.Title, book.Genre)
-
 	if err := row.Scan(&cp.Id); err != nil {
+		log.Printf("Unnable to query row: %v", err)
 		return nil, err
 	}
+	for _, author := range book.Authors {
+		_, err := tx.ExecContext(ctx, Query.ConnectAuthorsToBooksQuery, cp.Id, author.Id)
+		if err != nil {
+			log.Printf("Unable to connect books with authors: %v", err)
+			rollback()
+		}
+	}
 
-	return cp, nil
+	log.Println("Committing transaction")
+	if err := tx.Commit(); err != nil {
+		log.Printf("Failed committing: %v", err)
+		rollback()
+		return nil, err
+	}
+	log.Println("Success")
+	b, err := booksRepository.Retrieve(cp.Id, opt)
+	if err != nil {
+		log.Printf("Failed retriving the info back: %v", err)
+		return nil, err
+	}
+	return b, nil
 }
 
-func (b BooksRepository) Retrieve(id string, opt *QueryOptions) (*types.BookDto, error) {
+func (booksRepository BooksRepository) Retrieve(id string, opt *QueryOptions) (*types.BookDto, error) {
 	query := Query.SelectBookQuery
 
-	rows, err := b.db.Query(query, id)
+	rows, err := booksRepository.db.Query(query, id)
 	defer rows.Close()
 
 	if err != nil {
@@ -65,11 +94,11 @@ func (b BooksRepository) Retrieve(id string, opt *QueryOptions) (*types.BookDto,
 	return &book, nil
 }
 
-func (b BooksRepository) RetrieveAll(opt *QueryOptions) ([]types.BookDto, error) {
+func (booksRepository BooksRepository) RetrieveAll(opt *QueryOptions) ([]types.BookDto, error) {
 	offset := opt.Offset
 	query := Query.SelectBooksQuery
 
-	rows, err := b.db.Query(query, offset)
+	rows, err := booksRepository.db.Query(query, offset)
 	if err != nil {
 		switch err {
 		case sql.ErrNoRows:
@@ -108,12 +137,12 @@ func (b BooksRepository) RetrieveAll(opt *QueryOptions) ([]types.BookDto, error)
 	return books, nil
 }
 
-func (b BooksRepository) Delete(id string, opt *QueryOptions) error {
+func (booksRepository BooksRepository) Delete(id string, opt *QueryOptions) error {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (b BooksRepository) Update(id string, newItem types.BookDto, opt *QueryOptions) error {
+func (booksRepository BooksRepository) Update(id string, newItem types.BookDto, opt *QueryOptions) error {
 	//TODO implement me
 	panic("implement me")
 }

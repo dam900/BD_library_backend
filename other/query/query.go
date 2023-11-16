@@ -63,4 +63,6 @@ FROM new_book;`
 
 	SetBorrowedQuery = `INSERT INTO borrowed (book_id, user_id, date_from, date_to)
 VALUES (2, 'Jowal', '2023-11-05','2023-11-05');`
+
+	ConnectAuthorsToBooksQuery = `INSERT INTO books2authors (book_id, author_id) VALUES ($1, $2);`
 )
