@@ -25,7 +25,7 @@ func (a AuthorsRepository) Create(author *types.Author, opt *QueryOptions) (*typ
 
 func (a AuthorsRepository) Retrieve(id string, opt *QueryOptions) (*types.Author, error) {
 	var author types.Author
-	err := a.Db.QueryRow(Query.SelectAuthorQuery, id).Scan(author)
+	err := a.Db.QueryRow(Query.SelectAuthorQuery, id).Scan(&author.Id, &author.Name, &author.LastName)
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +40,7 @@ func (a AuthorsRepository) RetrieveAll(opt *QueryOptions) ([]types.Author, error
 	}
 	for rows.Next() {
 		var author types.Author
-		if err := rows.Scan(author); err != nil {
+		if err := rows.Scan(&author.Id, &author.Name, &author.LastName); err != nil {
 			return nil, err
 		}
 		authors = append(authors, author)

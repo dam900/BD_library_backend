@@ -8,9 +8,9 @@ import (
 )
 
 func SetUpAuthorsEndpoint(echoClient *echo.Echo) {
-	echoClient.GET(GetBooks, getAuthors)
-	echoClient.POST(PostBook, postAuthors)
-	echoClient.GET(GetBookWithId, getAuthorsWithId)
+	echoClient.GET(GetAuthors, getAuthors)
+	echoClient.POST(PostAuthor, postAuthors)
+	echoClient.GET(GetAuthorWithId, getAuthorsWithId)
 }
 
 func getAuthors(c echo.Context) error {

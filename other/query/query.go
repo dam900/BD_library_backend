@@ -61,8 +61,15 @@ const (
 
 // CREATE //
 const (
-	CreateAuthorQuery = `INSERT INTO authors (name, last_name) VALUES ($1, $2);
-`
+	//CreateAuthorQuery = `INSERT INTO authors (name, last_name) VALUES ($1, $2); `
+
+	CreateAuthorQuery = `WITH new_author AS (
+						INSERT
+						INTO authors (name, last_name)
+						VALUES ($1, $2) RETURNING id
+							)
+						SELECT *
+						FROM new_author;`
 
 	CreateBookQuery = `WITH new_book AS (
 						INSERT
