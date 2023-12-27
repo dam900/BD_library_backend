@@ -65,7 +65,20 @@ const (
 						SELECT *
 						FROM new_book`
 
-	CreateBorrowedStatus = `INSERT INTO borrowed (book_id) VALUES $1`
+	CreateBorrowedStatusQuery = `INSERT INTO borrowed (book_id, user_id, date_from, date_to)
+									VALUES ($1, $2, $3, $4)
+									ON CONFLICT (book_id)
+									DO UPDATE SET
+									  user_id = EXCLUDED.user_id,
+									  date_from = EXCLUDED.date_from,
+									  date_to = EXCLUDED.date_to;`
+
+	CreateBookedStatusQuery = `INSERT INTO booked (book_id, user_id, date_to)
+									VALUES ($1, $2, $3)
+									ON CONFLICT (book_id)
+									DO UPDATE SET
+									  user_id = EXCLUDED.user_id,
+									  date_to = EXCLUDED.date_to;`
 
 	CreateAuthorsToBooksQuery = `INSERT INTO books2authors (book_id, author_id) VALUES ($1, $2);`
 )
@@ -76,7 +89,4 @@ const (
 	UpdateBooksQuery = `UPDATE books
 						SET title = $1, genre = $2
 						WHERE id = $3`
-
-	UpdateBorrowedQuery = `UPDATE borrowed SET date_from = $1, date_to = $2, user_id = $3 
-						WHERE book_id = $4`
 )

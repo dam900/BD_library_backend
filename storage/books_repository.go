@@ -35,46 +35,14 @@ func (booksRepository BooksRepository) Delete(id string, opt *QueryOptions) erro
 	return nil
 }
 
-func (booksRepository BooksRepository) Update(id string, book types.BookDto, opt *QueryOptions) (*types.BookDto, error) {
+func (booksRepository BooksRepository) Update(id string, newBook *types.BookDto, opt *QueryOptions) (*types.BookDto, error) {
 	ctx := opt.Ctx.Request().Context()
-	log.Println("Opening transaction for /books")
-	tx, err := booksRepository.Db.BeginTx(ctx, &sql.TxOptions{})
-
-	//rollback := func() {
-	//	if err := tx.Rollback(); err != nil {
-	//		log.Printf("Unable to roll back: %v", err)
-	//	}
-	//}
-
-	if err != nil {
-		log.Printf("Cannot open transaction: %v", err)
-		return nil, err
-	}
-	log.Println("Success")
-
-	b, err := selectBook(id, booksRepository)
-	if err != nil {
-		log.Printf("Book doesn't exist", err)
-		return nil, err
-	}
-	if b.Title != book.Title || b.Genre != book.Genre {
-		tx.Exec(Query.UpdateBooksQuery, book.Title, book.Genre)
-	}
-	//if b.BookedStatus != book.BookedStatus {
-	//	//tx.Exec(Query.UpdateBooksQuery, book.Title, book.Genre)
-	//}
-	if b.BorrowedStatus != book.BorrowedStatus {
-		s := book.BorrowedStatus
-		tx.Exec(Query.UpdateBorrowedQuery, s.From, s.To, s.BorrowedBy, book.Id)
-	}
-	return &book, nil
+	return updateBook(id, newBook, booksRepository, ctx)
 }
 
 func selectBook(id string, booksRepository BooksRepository) (*types.BookDto, error) {
+	rows, err := booksRepository.Db.Query(Query.SelectBookQuery, id)
 
-	query := Query.SelectBookQuery
-
-	rows, err := booksRepository.Db.Query(query, id)
 	defer rows.Close()
 
 	if err != nil {
@@ -156,10 +124,6 @@ func createBook(book *types.BookDto, opt *QueryOptions, booksRepository BooksRep
 		log.Printf("Unnable to query row: %v", err)
 		return nil, err
 	}
-	if _, err := tx.Exec(Query.CreateBorrowedStatus, book.Id); err != nil {
-		log.Printf("Unnable to create default borrowed status: %v", err)
-		return nil, err
-	}
 
 	for _, author := range book.Authors {
 		_, err := tx.ExecContext(ctx, Query.CreateAuthorsToBooksQuery, book.Id, author.Id)
@@ -176,11 +140,59 @@ func createBook(book *types.BookDto, opt *QueryOptions, booksRepository BooksRep
 		return nil, err
 	}
 	log.Println("Success")
-	b, err := booksRepository.Retrieve(book.Id, opt)
-
+	b, err := selectBook(book.Id, booksRepository)
 	if err != nil {
 		log.Printf("Failed retriving the info back: %v", err)
 		return nil, err
 	}
 	return b, nil
+}
+
+func updateBook(id string, newBook *types.BookDto, booksRepository BooksRepository, ctx context.Context) (*types.BookDto, error) {
+
+	b, err := selectBook(id, booksRepository)
+	if err != nil {
+		log.Printf("Book doesn't exist: %v", err)
+		return nil, err
+	}
+
+	log.Println("Opening transaction for /books")
+	tx, err := booksRepository.Db.BeginTx(ctx, &sql.TxOptions{})
+
+	if err != nil {
+		log.Printf("Cannot open transaction: %v", err)
+		return nil, err
+	}
+	log.Println("Success")
+
+	if b.Title != newBook.Title || b.Genre != newBook.Genre {
+		// update title and genre if they differ from original
+		if newBook.Title == "" {
+			newBook.Title = b.Title
+		}
+		if newBook.Genre == "" {
+			newBook.Genre = b.Genre
+		}
+		if _, err := tx.Exec(Query.UpdateBooksQuery, newBook.Title, newBook.Genre, id); err != nil {
+			return nil, err
+		}
+	}
+	if b.BookedStatus != nil && newBook.BookedStatus != nil && b.BookedStatus != newBook.BookedStatus {
+		// update/set/clear booked status
+		s := newBook.BookedStatus
+		if _, err := tx.Exec(Query.CreateBookedStatusQuery, id, s.BookedBy, s.To.String()); err != nil {
+			return nil, err
+		}
+	}
+	if b.BorrowedStatus != nil && newBook.BorrowedStatus != nil && b.BorrowedStatus != newBook.BorrowedStatus {
+		// update/set/clear borrowed status
+		s := newBook.BorrowedStatus
+		if _, err := tx.Exec(Query.CreateBorrowedStatusQuery, id, s.BorrowedBy, s.From.String(), s.To.String()); err != nil {
+			return nil, err
+		}
+	}
+	if err := tx.Commit(); err != nil {
+		return nil, err
+	}
+	return newBook, nil
 }

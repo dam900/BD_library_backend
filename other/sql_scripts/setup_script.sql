@@ -43,20 +43,20 @@ CREATE TABLE users
 CREATE TABLE borrowed
 (
     book_id   UUID NOT NULL,
-    user_id   TEXT DEFAULT NULL,
-    date_from DATE DEFAULT NULL,
-    date_to   DATE DEFAULT NULL,
+    user_id   TEXT NOT NULL,
+    date_from DATE,
+    date_to   DATE,
     CONSTRAINT fk_book FOREIGN KEY (book_id) REFERENCES books (id) ON DELETE CASCADE,
     CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users (login_id) ON DELETE CASCADE,
-    PRIMARY KEY (book_id)
+    PRIMARY KEY (user_id, book_id)
 );
 
 CREATE TABLE booked
 (
     book_id UUID NOT NULL,
-    user_id TEXT DEFAULT NULL,
-    date_to DATE DEFAULT NULL,
+    user_id TEXT NOT NULL,
+    date_to DATE,
     CONSTRAINT fk_book FOREIGN KEY (book_id) REFERENCES books (id) ON DELETE CASCADE,
     CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users (login_id) ON DELETE CASCADE,
-    PRIMARY KEY (book_id)
+    PRIMARY KEY (user_id, book_id)
 );

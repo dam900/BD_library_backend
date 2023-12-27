@@ -50,7 +50,16 @@ func postBooks(c echo.Context) error {
 
 func putBook(c echo.Context) error {
 	id := c.Param("id")
-	return c.String(http.StatusOK, id)
+	db := c.Get(storage.DbContextKey).(*storage.PostgresStorage)
+	b := &types.BookDto{}
+	if err := c.Bind(b); err != nil {
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+	newBook, err := db.BooksRepository.Update(id, b, &storage.QueryOptions{Ctx: c})
+	if err != nil {
+		return c.String(http.StatusInternalServerError, err.Error())
+	}
+	return c.JSONPretty(http.StatusOK, newBook, "   ")
 }
 
 func deleteBook(c echo.Context) error {
