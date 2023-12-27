@@ -62,6 +62,10 @@ WHERE b.id = 'uuid'
 GROUP BY b.id, b2.date_to, b2.user_id, b3.user_id, b3.date_from, b3.date_to;
 -- UPDATE add later
 
+UPDATE books
+SET title = 'title1', genre = 'genre1'
+WHERE id = 'id'
+
 -- DELETE add later
 
 DELETE FROM books WHERE books.id = 'uuid';

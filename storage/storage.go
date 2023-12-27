@@ -21,7 +21,7 @@ type (
 		Retrieve(id string, opt *QueryOptions) (*T, error)
 		RetrieveAll(opt *QueryOptions) ([]T, error)
 		Delete(id string, opt *QueryOptions) error
-		Update(id string, newItem T, opt *QueryOptions) error
+		Update(id string, newItem T, opt *QueryOptions) (*T, error)
 	}
 	PostgresStorage struct {
 		db              *sql.DB

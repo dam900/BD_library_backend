@@ -2,23 +2,24 @@ package storage
 
 import (
 	"database/sql"
+	"library_app/types"
 )
 
 type UsersRepository struct {
 	db *sql.DB
 }
 
-func (u UsersRepository) Create(item *UsersRepository, opt *QueryOptions) (*UsersRepository, error) {
+func (u UsersRepository) Create(item *types.User, opt *QueryOptions) (*types.User, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (u UsersRepository) Retrieve(id string, opt *QueryOptions) (*UsersRepository, error) {
+func (u UsersRepository) Retrieve(id string, opt *QueryOptions) (*types.User, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (u UsersRepository) RetrieveAll(opt *QueryOptions) ([]UsersRepository, error) {
+func (u UsersRepository) RetrieveAll(opt *QueryOptions) ([]types.User, error) {
 	//TODO implement me
 	panic("implement me")
 }
@@ -28,7 +29,7 @@ func (u UsersRepository) Delete(id string, opt *QueryOptions) error {
 	panic("implement me")
 }
 
-func (u UsersRepository) Update(id string, newItem UsersRepository, opt *QueryOptions) error {
+func (u UsersRepository) Update(id string, newItem types.User, opt *QueryOptions) (*types.User, error) {
 	//TODO implement me
 	panic("implement me")
 }

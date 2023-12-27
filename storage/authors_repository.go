@@ -29,7 +29,7 @@ func (a AuthorsRepository) Delete(id string, opt *QueryOptions) error {
 	panic("implement me")
 }
 
-func (a AuthorsRepository) Update(id string, newItem types.Author, opt *QueryOptions) error {
+func (a AuthorsRepository) Update(id string, newItem types.Author, opt *QueryOptions) (*types.Author, error) {
 	//TODO implement me
 	panic("implement me")
 }
