@@ -17,7 +17,7 @@ type (
 		Offset int
 	}
 	Repository[T any] interface {
-		Create(item T, opt *QueryOptions) (string, error)
+		Create(item *T, opt *QueryOptions) (*T, error)
 		Retrieve(id string, opt *QueryOptions) (*T, error)
 		RetrieveAll(opt *QueryOptions) ([]T, error)
 		Delete(id string, opt *QueryOptions) error
@@ -47,7 +47,7 @@ func NewPostgresStore() (*PostgresStorage, error) {
 
 	return &PostgresStorage{
 		db:              db,
-		BooksRepository: BooksRepository{db: db},
+		BooksRepository: BooksRepository{Db: db},
 		UsersRepository: UsersRepository{db: db},
 	}, nil
 

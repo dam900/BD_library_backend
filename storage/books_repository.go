@@ -9,14 +9,14 @@ import (
 )
 
 type BooksRepository struct {
-	db *sql.DB
+	Db *sql.DB
 }
 
 func (booksRepository BooksRepository) Create(book *types.BookDto, opt *QueryOptions) (*types.BookDto, error) {
 	ctx := opt.Ctx.Request().Context()
 	cp := book
-	log.Println("Opening transaction")
-	tx, err := booksRepository.db.BeginTx(ctx, &sql.TxOptions{})
+	log.Println("Opening transaction for /books")
+	tx, err := booksRepository.Db.BeginTx(ctx, &sql.TxOptions{})
 
 	rollback := func() {
 		if err := tx.Rollback(); err != nil {
@@ -60,7 +60,7 @@ func (booksRepository BooksRepository) Create(book *types.BookDto, opt *QueryOpt
 func (booksRepository BooksRepository) Retrieve(id string, opt *QueryOptions) (*types.BookDto, error) {
 	query := Query.SelectBookQuery
 
-	rows, err := booksRepository.db.Query(query, id)
+	rows, err := booksRepository.Db.Query(query, id)
 	defer rows.Close()
 
 	if err != nil {
@@ -98,7 +98,7 @@ func (booksRepository BooksRepository) RetrieveAll(opt *QueryOptions) ([]types.B
 	offset := opt.Offset
 	query := Query.SelectBooksQuery
 
-	rows, err := booksRepository.db.Query(query, offset)
+	rows, err := booksRepository.Db.Query(query, offset)
 	if err != nil {
 		switch err {
 		case sql.ErrNoRows:
@@ -138,10 +138,10 @@ func (booksRepository BooksRepository) RetrieveAll(opt *QueryOptions) ([]types.B
 }
 
 func (booksRepository BooksRepository) Delete(id string, opt *QueryOptions) error {
-	_, err := booksRepository.db.Exec(Query.DeleteBookQuery, id)
-	if err != nil {
-		return err
-	}
+	//_, err := booksRepository.Db.Exec(Query.DeleteBookQuery, id)
+	//if err != nil {
+	//	return err
+	//}
 	return nil
 }
 
