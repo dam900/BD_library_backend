@@ -24,9 +24,10 @@ type (
 		Update(id string, newItem T, opt *QueryOptions) (*T, error)
 	}
 	PostgresStorage struct {
-		db              *sql.DB
-		BooksRepository BooksRepository
-		UsersRepository UsersRepository
+		db                *sql.DB
+		BooksRepository   BooksRepository
+		UsersRepository   UsersRepository
+		AuthorsRepository AuthorsRepository
 	}
 )
 
@@ -46,9 +47,10 @@ func NewPostgresStore() (*PostgresStorage, error) {
 	log.Println("Ping succeeded")
 
 	return &PostgresStorage{
-		db:              db,
-		BooksRepository: BooksRepository{Db: db},
-		UsersRepository: UsersRepository{db: db},
+		db:                db,
+		BooksRepository:   BooksRepository{Db: db},
+		UsersRepository:   UsersRepository{Db: db},
+		AuthorsRepository: AuthorsRepository{Db: db},
 	}, nil
 
 }

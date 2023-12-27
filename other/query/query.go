@@ -53,17 +53,24 @@ const (
 								 LEFT JOIN borrowed b3 on b.id = b3.book_id
 						GROUP BY b.id, b2.date_to, b2.user_id, b3.user_id, b3.date_from, b3.date_to
 						OFFSET $1 LIMIT 100;`
+
+	SelectAuthorsQuery = `SELECT * FROM authors;`
+
+	SelectAuthorQuery = `SELECT * FROM authors WHERE id = $1;`
 )
 
 // CREATE //
 const (
-	CreateBookQuery = `WITH new_book as (
+	CreateAuthorQuery = `INSERT INTO authors (name, last_name) VALUES ($1, $2);
+`
+
+	CreateBookQuery = `WITH new_book AS (
 						INSERT
 						INTO books (title, genre)
 						VALUES ($1, $2) RETURNING id
 							)
 						SELECT *
-						FROM new_book`
+						FROM new_book;`
 
 	CreateBorrowedStatusQuery = `INSERT INTO borrowed (book_id, user_id, date_from, date_to)
 									VALUES ($1, $2, $3, $4)
@@ -89,4 +96,14 @@ const (
 	UpdateBooksQuery = `UPDATE books
 						SET title = $1, genre = $2
 						WHERE id = $3`
+
+	UpdateAuthorQuery = `UPDATE authors SET name = $1, last_name = $2 WHERE id = $3;`
+)
+
+// DELETE //
+
+const (
+	DeleteBookQuery = `DELETE FROM books WHERE id=$1`
+
+	DeleteAuthorQuery = `DELETE FROM authors WHERE id = $1;`
 )

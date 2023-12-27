@@ -6,7 +6,7 @@ import (
 )
 
 type UsersRepository struct {
-	db *sql.DB
+	Db *sql.DB
 }
 
 func (u UsersRepository) Create(item *types.User, opt *QueryOptions) (*types.User, error) {

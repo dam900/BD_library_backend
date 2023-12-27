@@ -15,7 +15,7 @@ type BooksRepository struct {
 
 func (booksRepository BooksRepository) Create(book *types.BookDto, opt *QueryOptions) (*types.BookDto, error) {
 	ctx := opt.Ctx.Request().Context()
-	return createBook(book, opt, booksRepository, ctx)
+	return createBook(book, booksRepository, ctx)
 }
 
 func (booksRepository BooksRepository) Retrieve(id string, opt *QueryOptions) (*types.BookDto, error) {
@@ -28,16 +28,20 @@ func (booksRepository BooksRepository) RetrieveAll(opt *QueryOptions) ([]types.B
 }
 
 func (booksRepository BooksRepository) Delete(id string, opt *QueryOptions) error {
-	//_, err := booksRepository.Db.Exec(Query.DeleteBookQuery, id)
-	//if err != nil {
-	//	return err
-	//}
-	return nil
+	return deleteBook(id, booksRepository)
 }
 
 func (booksRepository BooksRepository) Update(id string, newBook *types.BookDto, opt *QueryOptions) (*types.BookDto, error) {
 	ctx := opt.Ctx.Request().Context()
 	return updateBook(id, newBook, booksRepository, ctx)
+}
+
+func deleteBook(id string, booksRepository BooksRepository) error {
+	_, err := booksRepository.Db.Exec(Query.DeleteBookQuery, id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func selectBook(id string, booksRepository BooksRepository) (*types.BookDto, error) {
@@ -104,7 +108,7 @@ func unmarshallBook(rows *sql.Rows) (types.BookDto, error) {
 	return book, nil
 }
 
-func createBook(book *types.BookDto, opt *QueryOptions, booksRepository BooksRepository, ctx context.Context) (*types.BookDto, error) {
+func createBook(book *types.BookDto, booksRepository BooksRepository, ctx context.Context) (*types.BookDto, error) {
 	log.Println("Opening transaction for /books")
 	tx, err := booksRepository.Db.BeginTx(ctx, &sql.TxOptions{})
 

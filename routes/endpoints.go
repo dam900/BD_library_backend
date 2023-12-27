@@ -12,6 +12,12 @@ const PostBook = "/books"
 const PutBook = "/books/:id"
 const DeleteBook = "/books/:id"
 
+// Authors endpoint
+
+const GetAuthors = "/authors"
+const GetAuthorWithId = "/authors/:id"
+const PostAuthor = "/authors"
+
 // Borrowed Books endpoint
 
 const PostBorrowedBooks = "/borrowed"
