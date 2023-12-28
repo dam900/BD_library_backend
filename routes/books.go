@@ -28,6 +28,9 @@ func getBooks(c echo.Context) error {
 func getBookWithId(c echo.Context) error {
 	id := c.Param("id")
 	db := c.Get(storage.DbContextKey).(*storage.PostgresStorage)
+	if db.BooksRepository.DoesExist(id) == false {
+		return c.JSON(http.StatusNotFound, "")
+	}
 	result, err := db.BooksRepository.Retrieve(id, &storage.QueryOptions{c, 0})
 	if err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
@@ -51,6 +54,9 @@ func postBooks(c echo.Context) error {
 func putBook(c echo.Context) error {
 	id := c.Param("id")
 	db := c.Get(storage.DbContextKey).(*storage.PostgresStorage)
+	if db.BooksRepository.DoesExist(id) == false {
+		return c.JSON(http.StatusNotFound, "")
+	}
 	b := &types.BookDto{}
 	if err := c.Bind(b); err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
@@ -65,6 +71,9 @@ func putBook(c echo.Context) error {
 func deleteBook(c echo.Context) error {
 	id := c.Param("id")
 	db := c.Get(storage.DbContextKey).(*storage.PostgresStorage)
+	if db.BooksRepository.DoesExist(id) == false {
+		return c.JSON(http.StatusNotFound, "")
+	}
 	err := db.BooksRepository.Delete(id, &storage.QueryOptions{
 		Ctx: c,
 	})

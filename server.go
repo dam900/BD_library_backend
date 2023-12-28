@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"library_app/auth"
 	"library_app/routes"
 	"library_app/storage"
 	"log"
@@ -22,6 +23,7 @@ func main() {
 		log.Fatal(err)
 	}
 	e.Use(storage.DbMiddleware(store))
+	e.Use(middleware.BasicAuth(auth.Authorize))
 
 	log.Println("Setting up routes")
 

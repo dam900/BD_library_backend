@@ -13,6 +13,14 @@ type BooksRepository struct {
 	Db *sql.DB
 }
 
+func (booksRepository BooksRepository) DoesExist(id string) bool {
+	_, err := booksRepository.Db.Query(Query.SelectBookQuery, id)
+	if err != nil {
+		return false
+	}
+	return true
+}
+
 func (booksRepository BooksRepository) Create(book *types.BookDto, opt *QueryOptions) (*types.BookDto, error) {
 	ctx := opt.Ctx.Request().Context()
 	return createBook(book, booksRepository, ctx)

@@ -14,9 +14,22 @@ func (u UsersRepository) Create(item *types.User, opt *QueryOptions) (*types.Use
 	panic("implement me")
 }
 
+func (u UsersRepository) DoesExist(id string) (*types.User, bool) {
+	var user types.User
+	row := u.Db.QueryRow("SELECT * FROM users WHERE login_id = $1", id)
+	if err := row.Scan(&user.Name, &user.Lastname, &user.Login, &user.Password); err != nil {
+		return nil, false
+	}
+	return &user, true
+}
+
 func (u UsersRepository) Retrieve(id string, opt *QueryOptions) (*types.User, error) {
-	//TODO implement me
-	panic("implement me")
+	var user types.User
+	row := u.Db.QueryRow("SELECT * FROM users WHERE login_id = $1", id)
+	if err := row.Scan(&user.Name, &user.Lastname, &user.Login, &user.Password); err != nil {
+		return nil, err
+	}
+	return &user, nil
 }
 
 func (u UsersRepository) RetrieveAll(opt *QueryOptions) ([]types.User, error) {

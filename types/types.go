@@ -28,9 +28,8 @@ type (
 		To         *date.Date `json:"to,omitempty"`
 	}
 	User struct {
-		Id       int    `json:"id"`
 		Name     string `json:"name"`
-		Surname  string `json:"author"`
+		Lastname string `json:"lastname"`
 		Login    string `json:"login"`
 		Password string `json:"password"`
 	}
