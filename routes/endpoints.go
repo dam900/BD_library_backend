@@ -25,7 +25,7 @@ const DeleteBorrowedBook = "/borrowed/:id"
 
 // Booked Books endpoint
 
-const PostBookedBooks = "/booked"
+const PostBookedBooks = "/booked/:id"
 const DeleteBookedBook = "/booked/:id"
 
 // Users endpoint

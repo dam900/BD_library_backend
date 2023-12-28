@@ -44,6 +44,30 @@ func (booksRepository BooksRepository) Update(id string, newBook *types.BookDto,
 	return updateBook(id, newBook, booksRepository, ctx)
 }
 
+func (booksRepository BooksRepository) BookBook(id string, status *types.BookedStatus, opt *QueryOptions) error {
+	book, err := booksRepository.Retrieve(id, opt)
+	if err != nil {
+		return err
+	}
+	_, err = booksRepository.Db.Exec(Query.CreateBookedStatusQuery, book.Id, status.BookedBy, status.To.String())
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (booksRepository BooksRepository) UnBookBook(id string, status *types.BookedStatus, opt *QueryOptions) error {
+	book, err := booksRepository.Retrieve(id, opt)
+	if err != nil {
+		return err
+	}
+	_, err = booksRepository.Db.Exec(Query.CreateBookedStatusQuery, book.Id, status.BookedBy, status.To)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func deleteBook(id string, booksRepository BooksRepository) error {
 	_, err := booksRepository.Db.Exec(Query.DeleteBookQuery, id)
 	if err != nil {
