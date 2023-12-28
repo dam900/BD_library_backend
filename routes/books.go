@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func SetUpBooksEndpoint(echoClient *echo.Echo) {
+func SetUpBooksEndpoint(echoClient *echo.Group) {
 	echoClient.GET(GetBooks, getBooks)
 	echoClient.POST(PostBook, postBooks)
 	echoClient.GET(GetBookWithId, getBookWithId)

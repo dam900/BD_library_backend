@@ -22,13 +22,19 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	e.Use(storage.DbMiddleware(store))
-	e.Use(middleware.BasicAuth(auth.Authorize))
+
+	api := e.Group("/api")
+	login := e.Group("/login")
+	routes.SetUpLoginEndpoint(login)
+
+	api.Use(middleware.BasicAuth(auth.Authorize))
 
 	log.Println("Setting up routes")
 
-	routes.SetUpBooksEndpoint(e)
-	routes.SetUpAuthorsEndpoint(e)
+	routes.SetUpBooksEndpoint(api)
+	routes.SetUpAuthorsEndpoint(api)
 
 	log.Println("Starting a server")
 	log.Println("Server running on: http://localhost:1323/")

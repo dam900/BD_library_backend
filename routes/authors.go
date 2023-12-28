@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func SetUpAuthorsEndpoint(echoClient *echo.Echo) {
+func SetUpAuthorsEndpoint(echoClient *echo.Group) {
 	echoClient.GET(GetAuthors, getAuthors)
 	echoClient.POST(PostAuthor, postAuthors)
 	echoClient.GET(GetAuthorWithId, getAuthorsWithId)
@@ -25,6 +25,9 @@ func getAuthors(c echo.Context) error {
 func getAuthorsWithId(c echo.Context) error {
 	id := c.Param("id")
 	db := c.Get(storage.DbContextKey).(*storage.PostgresStorage)
+	if !db.AuthorsRepository.DoesExist(id) {
+		return c.JSON(http.StatusNotFound, "Author doesn't exist")
+	}
 	result, err := db.AuthorsRepository.Retrieve(id, &storage.QueryOptions{c, 0})
 	if err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())

@@ -29,3 +29,5 @@ const PostBookedBooks = "/booked"
 const DeleteBookedBook = "/booked/:id"
 
 // Users endpoint
+
+const PostLoginUsers = "/users"

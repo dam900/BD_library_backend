@@ -10,6 +10,14 @@ type AuthorsRepository struct {
 	Db *sql.DB
 }
 
+func (a AuthorsRepository) DoesExist(id string) bool {
+	err := a.Db.QueryRow(Query.SelectAuthorQuery, id)
+	if err != nil {
+		return false
+	}
+	return true
+}
+
 func (a AuthorsRepository) Create(author *types.Author, opt *QueryOptions) (*types.Author, error) {
 	_, err := a.Db.Exec(Query.CreateAuthorQuery, author.Name, author.LastName)
 	if err != nil {

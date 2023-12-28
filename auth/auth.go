@@ -20,11 +20,19 @@ func Authorize(username string, password string, c echo.Context) (bool, error) {
 		if exists == false {
 			return false, nil
 		}
-		if subtle.ConstantTimeCompare([]byte(username), []byte(user.Login)) == 1 &&
-			subtle.ConstantTimeCompare([]byte(password), []byte(user.Password)) == 1 {
+		good, err := GoodCredentials(username, password, user.Login, user.Password)
+		if good == true && err == nil {
 			return true, nil
 		}
 		return false, nil
 	}
 	return true, nil
+}
+
+func GoodCredentials(username string, password, providedUserName, providedPassword string) (bool, error) {
+	if subtle.ConstantTimeCompare([]byte(username), []byte(providedUserName)) == 1 &&
+		subtle.ConstantTimeCompare([]byte(password), []byte(providedPassword)) == 1 {
+		return true, nil
+	}
+	return false, nil
 }

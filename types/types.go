@@ -33,6 +33,10 @@ type (
 		Login    string `json:"login"`
 		Password string `json:"password"`
 	}
+	Credentials struct {
+		Login    string `json:"login"`
+		Password string `json:"password"`
+	}
 )
 
 func (b BookDto) IsBooked() bool {
