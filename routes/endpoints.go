@@ -28,6 +28,10 @@ const DeleteBorrowedBook = "/borrowed/:user/:id"
 const PostBookedBooks = "/booked/:id"
 const DeleteBookedBook = "/booked/:user/:id"
 
+// Archive endpoint
+
+const GetArchive = "/archive/:user"
+
 // Users endpoint
 
 const PostLoginUsers = "/users"

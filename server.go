@@ -37,6 +37,7 @@ func main() {
 	routes.SetUpAuthorsEndpoint(api)
 	routes.SetUpBookedEndpoint(api)
 	routes.SetUpBorrowedEndpoint(api)
+	routes.SetUpArchiveEndpoint(api)
 
 	log.Println("Starting a server")
 	log.Println("Server running on: http://localhost:1323/")

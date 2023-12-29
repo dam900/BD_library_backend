@@ -44,6 +44,27 @@ func (booksRepository BooksRepository) Update(id string, newBook *types.BookDto,
 	return updateBook(id, newBook, booksRepository, ctx)
 }
 
+func (booksRepository BooksRepository) RetrieveArchive(id string, opt *QueryOptions) ([]types.BookDto, error) {
+	rows, err := booksRepository.Db.Query(Query.SelectArchivedQuery, id, opt.Offset)
+	if err != nil {
+		switch err {
+		case sql.ErrNoRows:
+			return nil, err
+		}
+	}
+
+	var books []types.BookDto
+	for rows.Next() {
+		book, err := unmarshallBook(rows)
+		if err != nil {
+			return nil, err
+		}
+		books = append(books, book)
+	}
+
+	return books, nil
+}
+
 func (booksRepository BooksRepository) BookBook(id string, status *types.BookedStatus, opt *QueryOptions) error {
 	book, err := booksRepository.Retrieve(id, opt)
 	if err != nil {
