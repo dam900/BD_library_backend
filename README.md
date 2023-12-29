@@ -29,7 +29,7 @@ This should start an Echo server on port `:1323`
 
 #### Database
 
-![SqlDiagram.png](other%2Fsql_scripts%2FSqlDiagram.png)
+![SqlDiagram.png](other/sql_scripts/SqlDiagram.png)
 
 
 
