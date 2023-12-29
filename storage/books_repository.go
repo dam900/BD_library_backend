@@ -56,13 +56,49 @@ func (booksRepository BooksRepository) BookBook(id string, status *types.BookedS
 	return nil
 }
 
-func (booksRepository BooksRepository) UnBookBook(id string, status *types.BookedStatus, opt *QueryOptions) error {
-	book, err := booksRepository.Retrieve(id, opt)
+func (booksRepository BooksRepository) UnBookBook(id, userId string) error {
+	_, err := booksRepository.Db.Exec("DELETE FROM booked WHERE book_id=$1 AND user_id=$2", id, userId)
 	if err != nil {
 		return err
 	}
-	_, err = booksRepository.Db.Exec(Query.CreateBookedStatusQuery, book.Id, status.BookedBy, status.To)
+	return nil
+}
+
+func (booksRepository BooksRepository) BorrowBook(id string, status *types.BorrowedStatus, opt *QueryOptions) error {
+	book, err := booksRepository.Retrieve(id, opt)
+	ctx := opt.Ctx.Request().Context()
 	if err != nil {
+		return err
+	}
+	tx, err := booksRepository.Db.BeginTx(ctx, &sql.TxOptions{})
+	if book.IsBooked() {
+		_, err = tx.Exec("DELETE FROM booked WHERE book_id = $1 AND user_id = $2", book.Id, status.BorrowedBy)
+		if err != nil {
+			return err
+		}
+	}
+	_, err = tx.Exec(Query.CreateBorrowedStatusQuery, book.Id, status.BorrowedBy, status.From.String(), status.To.String())
+	if err != nil {
+		return err
+	}
+	if err = tx.Commit(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (booksRepository BooksRepository) UnBorrowBook(id, userId string, opt *QueryOptions) error {
+	ctx := opt.Ctx.Request().Context()
+	tx, err := booksRepository.Db.BeginTx(ctx, &sql.TxOptions{})
+	_, err = tx.Exec("DELETE FROM borrowed WHERE book_id = $1 AND user_id = $2", id, userId)
+	if err != nil {
+		return err
+	}
+	_, err = tx.Exec("INSERT INTO archive (book_id, user_id) VALUES ($1, $2) ON CONFLICT DO NOTHING", id, userId)
+	if err != nil {
+		return err
+	}
+	if err = tx.Commit(); err != nil {
 		return err
 	}
 	return nil
@@ -206,7 +242,6 @@ func updateBook(id string, newBook *types.BookDto, booksRepository BooksReposito
 	log.Println("Success")
 
 	if b.Title != newBook.Title || b.Genre != newBook.Genre {
-		// update title and genre if they differ from original
 		if newBook.Title == "" {
 			newBook.Title = b.Title
 		}
@@ -214,20 +249,6 @@ func updateBook(id string, newBook *types.BookDto, booksRepository BooksReposito
 			newBook.Genre = b.Genre
 		}
 		if _, err := tx.Exec(Query.UpdateBooksQuery, newBook.Title, newBook.Genre, id); err != nil {
-			return nil, err
-		}
-	}
-	if b.BookedStatus != nil && newBook.BookedStatus != nil && b.BookedStatus != newBook.BookedStatus {
-		// update/set/clear booked status
-		s := newBook.BookedStatus
-		if _, err := tx.Exec(Query.CreateBookedStatusQuery, id, s.BookedBy, s.To.String()); err != nil {
-			return nil, err
-		}
-	}
-	if b.BorrowedStatus != nil && newBook.BorrowedStatus != nil && b.BorrowedStatus != newBook.BorrowedStatus {
-		// update/set/clear borrowed status
-		s := newBook.BorrowedStatus
-		if _, err := tx.Exec(Query.CreateBorrowedStatusQuery, id, s.BorrowedBy, s.From.String(), s.To.String()); err != nil {
 			return nil, err
 		}
 	}

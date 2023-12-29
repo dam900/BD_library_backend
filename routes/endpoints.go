@@ -20,13 +20,13 @@ const PostAuthor = "/authors"
 
 // Borrowed Books endpoint
 
-const PostBorrowedBooks = "/borrowed"
-const DeleteBorrowedBook = "/borrowed/:id"
+const PostBorrowedBook = "/borrowed/:id"
+const DeleteBorrowedBook = "/borrowed/:user/:id"
 
 // Booked Books endpoint
 
 const PostBookedBooks = "/booked/:id"
-const DeleteBookedBook = "/booked/:id"
+const DeleteBookedBook = "/booked/:user/:id"
 
 // Users endpoint
 

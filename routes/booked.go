@@ -39,16 +39,18 @@ func postBooked(c echo.Context) error {
 
 func deleteBooked(c echo.Context) error {
 	id := c.Param("id")
+	userId := c.Param("user")
 	db := c.Get(storage.DbContextKey).(*storage.PostgresStorage)
 	book, err := db.BooksRepository.Retrieve(id, &storage.QueryOptions{Ctx: c, Offset: 0})
 	if err != nil {
 		return c.JSON(http.StatusNotFound, "Book doesn't exist")
 	}
 	if !book.IsBooked() {
-		return c.JSON(http.StatusConflict, "Cannot unbook not booked book")
+		return c.JSON(http.StatusConflict, "Book was never booked")
 	}
+	err = db.BooksRepository.UnBookBook(id, userId)
 	if err != nil {
-		return err
+		return c.JSON(http.StatusInternalServerError, err)
 	}
 	return c.JSON(http.StatusOK, "")
 }

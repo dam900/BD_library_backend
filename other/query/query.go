@@ -82,19 +82,10 @@ const (
 						FROM new_book;`
 
 	CreateBorrowedStatusQuery = `INSERT INTO borrowed (book_id, user_id, date_from, date_to)
-									VALUES ($1, $2, $3, $4)
-									ON CONFLICT (book_id)
-									DO UPDATE SET
-									  user_id = EXCLUDED.user_id,
-									  date_from = EXCLUDED.date_from,
-									  date_to = EXCLUDED.date_to;`
+									VALUES ($1, $2, $3, $4);`
 
 	CreateBookedStatusQuery = `INSERT INTO booked (book_id, user_id, date_to)
-									VALUES ($1, $2, $3)
-									ON CONFLICT (book_id)
-									DO UPDATE SET
-									  user_id = EXCLUDED.user_id,
-									  date_to = EXCLUDED.date_to;`
+									VALUES ($1, $2, $3);`
 
 	CreateAuthorsToBooksQuery = `INSERT INTO books2authors (book_id, author_id) VALUES ($1, $2);`
 )
