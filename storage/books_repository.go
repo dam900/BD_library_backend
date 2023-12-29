@@ -143,7 +143,6 @@ func unmarshallBook(rows *sql.Rows) (types.BookDto, error) {
 func createBook(book *types.BookDto, booksRepository BooksRepository, ctx context.Context) (*types.BookDto, error) {
 	log.Println("Opening transaction for /books")
 	tx, err := booksRepository.Db.BeginTx(ctx, &sql.TxOptions{})
-
 	rollback := func() {
 		if err := tx.Rollback(); err != nil {
 			log.Printf("Unable to roll back: %v", err)
@@ -155,7 +154,12 @@ func createBook(book *types.BookDto, booksRepository BooksRepository, ctx contex
 		return nil, err
 	}
 	log.Println("Success")
-	row := tx.QueryRowContext(ctx, Query.CreateBookQuery, book.Title, book.Genre)
+	var genreId int
+	err = tx.QueryRow("SELECT id FROM genres WHERE genre = $1", book.Genre).Scan(&genreId)
+	if err != nil {
+		return nil, err
+	}
+	row := tx.QueryRowContext(ctx, Query.CreateBookQuery, book.Title, genreId)
 	if err := row.Scan(&book.Id); err != nil {
 		log.Printf("Unnable to query row: %v", err)
 		return nil, err

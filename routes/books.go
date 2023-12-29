@@ -44,6 +44,9 @@ func postBooks(c echo.Context) error {
 	if err := c.Bind(b); err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
+	if len(b.Authors) == 0 {
+		return c.JSON(http.StatusBadRequest, "Cant create book without author")
+	}
 	b, err := db.BooksRepository.Create(b, &storage.QueryOptions{Ctx: c})
 	if err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())

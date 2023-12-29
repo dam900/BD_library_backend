@@ -4,7 +4,7 @@ package query
 const (
 	SelectBookQuery = `SELECT b.id,
 							   b.title,
-							   b.genre,
+							   g.genre,
 							   JSON_BUILD_OBJECT(
 									   'bookedBy', b2.user_id,
 									   'to', b2.date_to
@@ -21,16 +21,17 @@ const (
 											   'lastName', a.last_name)
 								   ) AS authors
 						FROM books AS b
+						    	 JOIN genres g on g.id = b.genre_id
 								 JOIN books2authors AS ba ON b.id = ba.book_id
 								 JOIN authors AS a ON ba.author_id = a.id
 								 LEFT JOIN booked b2 on b.id = b2.book_id
 								 LEFT JOIN borrowed b3 on b.id = b3.book_id
 						WHERE b.id = $1
-						GROUP BY b.id, b2.date_to, b2.user_id, b3.user_id, b3.date_from, b3.date_to`
+						GROUP BY b.id, b2.date_to, b2.user_id, b3.user_id, b3.date_from, b3.date_to, g.genre`
 
 	SelectBooksQuery = `SELECT b.id,
 							   b.title,
-							   b.genre,
+							   g.genre,
 							   JSON_BUILD_OBJECT(
 									   'bookedBy', b2.user_id,
 									   'to', b2.date_to
@@ -47,11 +48,12 @@ const (
 											   'lastName', a.last_name)
 								   ) AS authors
 						FROM books AS b
+								 JOIN genres g on g.id = b.genre_id
 								 JOIN books2authors AS ba ON b.id = ba.book_id
 								 JOIN authors AS a ON ba.author_id = a.id
 								 LEFT JOIN booked b2 on b.id = b2.book_id
 								 LEFT JOIN borrowed b3 on b.id = b3.book_id
-						GROUP BY b.id, b2.date_to, b2.user_id, b3.user_id, b3.date_from, b3.date_to
+						GROUP BY b.id, b2.date_to, b2.user_id, b3.user_id, b3.date_from, b3.date_to, g.genre
 						OFFSET $1 LIMIT 100;`
 
 	SelectAuthorsQuery = `SELECT * FROM authors;`
@@ -73,7 +75,7 @@ const (
 
 	CreateBookQuery = `WITH new_book AS (
 						INSERT
-						INTO books (title, genre)
+						INTO books (title, genre_id)
 						VALUES ($1, $2) RETURNING id
 							)
 						SELECT *
@@ -101,7 +103,7 @@ const (
 
 const (
 	UpdateBooksQuery = `UPDATE books
-						SET title = $1, genre = $2
+						SET title = $1, genre_id = $2
 						WHERE id = $3`
 
 	UpdateAuthorQuery = `UPDATE authors SET name = $1, last_name = $2 WHERE id = $3;`
